@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <title>TODOAngular</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.js"></script>
+    <style>
+        .wrapper {
+            width: 750px;
+            margin: 0 auto;
+        }
+        .done {
+            text-decoration: line-through;
+            color: #ccc;
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            padding: 20% 25% 20% 35%;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .view {
+            float: right;
+        }
+    </style>
+</head>
+<body ng-app="toDo" ng-controller="toDoCtrl">
+    <div class="wrapper">
+        <div layout-gt-xs="row">
+            <div flex-gt-xs>
+                <md-input-container>
+                    <input type="text" placeholder="Enter task" class="form-control"
+                           ng-keypress="($event.keyCode == 13) ? addTodo() : alert('hello')"
+                           name="newTodo" ng-model="newTodo"/>
+                </md-input-container>
+                <md-button class="md-raised md-primary md-block" ng-click="addTodo()">Add</md-button>
+                <md-input-container class="view">
+                    <input type="search" ng-model="searchText" placeholder="Search">
+                </md-input-container>
+            </div>
+        </div>
+
+        <md-list  >
+            <item-todo ng-drop="true" ng-drop-success="onDropComplete(todo, $index, $data, $index, $event)"
+                       ng-repeat="todo in todoList | filter:searchText track by $index" todo="todo"
+                       check-todo="doneTask($index)" del-todo="removeTodo($index)" ed-todo="editTask($index)" ">
+            </item-todo>
+        </md-list>
+
+        <div>
+            <h4>Task to do: {{todoList.length}}</h4>
+            <h4>Task done: {{(todoList | filter:{done: true} : true).length}}</h4>
+        </div>
+
+        <md-dialog ng-show="popup" md-theme="default" class="md md-default-theme md-transition-in" ng-class="dialog.css" role="dialog">
+            <md-dialog-content class="md-dialog-content" role="document" tabindex="-1" id="dialogContent_1233">
+                <h2 class="md-title ng-binding">Change task:</h2>
+
+                <md-input-container md-no-float=""  class="md-prompt-input-container ng-scope md-input-has-placeholder md-default-theme md-input-has-value">
+                    <input  md-autofocus="" ng-model="editTodo" class="ng-pristine ng-valid md-autofocus md-input ng-not-empty ng-touched"   aria-invalid="false">
+                    <div class="md-errors-spacer"></div>
+                </md-input-container>
+            </md-dialog-content>
+            <md-dialog-actions>
+                <md-button class="md-primary md-cancel-button md-button ng-scope md-default-theme md-ink-ripple" type="button" ng-click="cancelEdit()">
+                    <span class="ng-binding ng-scope">Cancel</span>
+                </md-button>
+                <md-button class="md-primary md-confirm-button md-button md-ink-ripple md-default-theme" type="button" ng-click="saveEdit()" >
+                    <span class="ng-binding ng-scope">Save</span>
+                </md-button>
+            </md-dialog-actions>
+        </md-dialog>
+
+        <!--<div ng-show="popup" ng-class="editpopup">-->
+            <!--<input type="text" id="edit-input" name="editTodo" ng-model="editTodo" />-->
+            <!--<button ng-click="saveEdit()">Save</button>-->
+            <!--<button ng-click="cancelEdit()">Cancel</button>-->
+        <!--</div>-->
+    </div>
+
+</body>
+</html>
